@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>مَجْلِس الأختام</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 1. شاشة الدخول -->
+  <section id="screen-home" class="screen active">
+    <div class="home-card">
+      <div class="logo-emblems">
+        <span class="emblem red" id="logo-fire"></span>
+        <span class="emblem navy" id="logo-moon"></span>
+        <span class="emblem red" id="logo-sun"></span>
+        <span class="emblem navy" id="logo-star"></span>
+      </div>
+      <h1>مَجْلِس الأختام</h1>
+      <p class="subtitle">تحدّي الشراكة الرباعي بتصميم أختام أصلي</p>
+
+      <div class="field">
+        <label>اسمك في اللعب</label>
+        <input type="text" id="input-name" maxlength="18" placeholder="مثلاً: أبو علي" />
+      </div>
+
+      <div class="divider"><span>إنشاء غرفة جديدة</span></div>
+      <div class="row-gap">
+        <select id="create-mode">
+          <option value="trex">المَمالِك (5 طلبات شراكة)</option>
+          <option value="tarneeb">السِّيادة 61 (شراكة)</option>
+        </select>
+        <button id="btn-create" class="btn primary">إنشاء غرفة</button>
+      </div>
+
+      <div class="divider"><span>أو الانضمام بكود الغرفة</span></div>
+      <div class="row-gap">
+        <input type="text" id="input-code" maxlength="6" placeholder="كود الغرفة" class="code-input" />
+        <button id="btn-join" class="btn secondary">دخول</button>
+      </div>
+
+      <p id="home-error" class="error-msg hidden"></p>
+    </div>
+  </section>
+
+  <!-- 2. صالة الانتظار (الغرفة الخاصة) -->
+  <section id="screen-lobby" class="screen">
+    <div class="lobby-card">
+      <div class="lobby-header">
+        <div>
+          <span class="badge" id="lobby-mode-badge">المَمالِك</span>
+          <h2>غرفة: <span id="lobby-code" class="room-code">-----</span></h2>
+        </div>
+        <button id="btn-copy-link" class="btn small secondary">نسخ رابط الدعوة</button>
+      </div>
+
+      <p class="hint-text">المقاعد المقابلة (1 مع 3) و (2 مع 4) هم شركاء في نفس الفريق. اضغط على مقعد فارغ للانتقال إليه.</p>
+
+      <div id="lobby-seats" class="lobby-seats-grid"></div>
+
+      <div id="host-controls" class="host-controls hidden">
+        <div class="row-gap">
+          <select id="lobby-mode-select">
+            <option value="trex">المَمالِك (تركس شراكة)</option>
+            <option value="tarneeb">السِّيادة 61 (طرنيب 61)</option>
+          </select>
+          <button id="btn-open-settings" class="btn secondary">تخصيص المسميات</button>
+        </div>
+        <button id="btn-start-game" class="btn primary full-width">ابدأ المباراة (بانتظار 4 لاعبين)</button>
+      </div>
+
+      <p id="lobby-wait-msg" class="hint-text hidden">بانتظار صاحب الغرفة لبدء المباراة...</p>
+      <button id="btn-leave-room" class="btn ghost full-width">مغادرة الغرفة</button>
+    </div>
+  </section>
+
+  <!-- 3. طاولة اللعب -->
+  <section id="screen-game" class="screen game-layout">
+    <header class="hud-bar">
+      <div class="hud-teams">
+        <div class="team-pill team0">
+          <span id="hud-team0-label">فريق 1</span>
+          <strong id="hud-team0-score">0</strong>
+        </div>
+        <div class="hud-center-info">
+          <span id="hud-mode">المَمالِك</span>
+          <small id="hud-contract">جولة 1</small>
+        </div>
+        <div class="team-pill team1">
+          <span id="hud-team1-label">فريق 2</span>
+          <strong id="hud-team1-score">0</strong>
+        </div>
+      </div>
+      <div class="hud-tools">
+        <span id="hud-round" class="round-chip">1</span>
+        <button id="btn-sound" class="icon-btn" title="الصوت">🔊</button>
+        <button id="btn-rules" class="icon-btn" title="القوانين">؟</button>
+      </div>
+    </header>
+
+    <div id="game-banner" class="game-banner hidden"></div>
+
+    <main class="table-felt">
+      <div id="seat-top" class="seat-box seat-top"></div>
+      <div id="seat-right" class="seat-box seat-right"></div>
+      <div id="seat-left" class="seat-box seat-left"></div>
+
+      <div class="table-center">
+        <div id="center-trick" class="center-trick hidden"></div>
+        <div id="center-cascade" class="center-cascade hidden"></div>
+        <div id="center-action" class="center-action hidden"></div>
+      </div>
+
+      <div id="seat-bottom" class="seat-box seat-bottom"></div>
+    </main>
+
+    <footer class="hand-tray">
+      <div id="hand-actions" class="hand-actions hidden"></div>
+      <div id="hand-cards" class="hand-cards"></div>
+    </footer>
+  </section>
+
+  <!-- نافذة تخصيص المسميات -->
+  <div id="modal-settings" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>تخصيص المسميات</h3>
+        <button id="btn-close-settings" class="icon-btn">✕</button>
+      </div>
+      <div class="settings-scroll">
+        <div class="field"><label>اسم المود الأول</label><input id="set-modeTrex" /></div>
+        <div class="field"><label>اسم المود الثاني</label><input id="set-modeTarneeb" /></div>
+        <div class="field"><label>اسم الحكم</label><input id="set-trumpLabel" /></div>
+        <div class="grid-2">
+          <div class="field"><label>بيت النار</label><input id="set-suit-fire" /></div>
+          <div class="field"><label>بيت الشمس</label><input id="set-suit-sun" /></div>
+          <div class="field"><label>بيت القمر</label><input id="set-suit-moon" /></div>
+          <div class="field"><label>بيت النجم</label><input id="set-suit-star" /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>رتبة 11</label><input id="set-rank-11" /></div>
+          <div class="field"><label>رتبة 12</label><input id="set-rank-12" /></div>
+          <div class="field"><label>رتبة 13</label><input id="set-rank-13" /></div>
+          <div class="field"><label>رتبة 1 (الأقوى)</label><input id="set-rank-14" /></div>
+        </div>
+        <div class="field"><label>طلب الأكلات (-15)</label><input id="set-c-no_tricks" /></div>
+        <div class="field"><label>طلب الشمس (-10)</label><input id="set-c-no_sun" /></div>
+        <div class="field"><label>طلب السيدات (-25)</label><input id="set-c-no_ladies" /></div>
+        <div class="field"><label>طلب سلطان النار (-75)</label><input id="set-c-no_sultan" /></div>
+        <div class="field"><label>طلب التسلسل</label><input id="set-c-cascade" /></div>
+      </div>
+      <button id="btn-save-settings" class="btn primary full-width">حفظ المسميات</button>
+    </div>
+  </div>
+
+  <!-- نافذة القوانين المختصرة -->
+  <div id="modal-rules" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>ملخص القوانين المعتمدة</h3>
+        <button id="btn-close-rules" class="icon-btn">✕</button>
+      </div>
+      <div id="rules-body" class="rules-body"></div>
+    </div>
+  </div>
+
+  <!-- نافذة نهاية المباراة -->
+  <div id="modal-gameover" class="modal hidden">
+    <div class="modal-box center-text">
+      <div class="trophy">🏆</div>
+      <h2 id="gameover-title">انتهت المباراة!</h2>
+      <div id="gameover-scores" class="gameover-scores"></div>
+      <div class="row-gap" style="margin-top: 16px;">
+        <button id="btn-play-again" class="btn primary hidden">لعب جولة جديدة</button>
+        <button id="btn-back-lobby" class="btn secondary hidden">العودة للصالة</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="deck.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
