@@ -1,0 +1,13 @@
+{
+  "name": "majlis-alakhtam",
+  "version": "1.0.0",
+  "description": "لعبة أختام جماعية أونلاين للموبايل",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "socket.io": "^4.8.1"
+  }
+}
